@@ -74,13 +74,16 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
       .version('2.2.2')
       .arguments('<newName>')
       .option('-b, --bundleID [value]', 'Set custom bundle identifier eg. "com.junedomingo.travelapp"')
+      .option('-p, --projectName [value]', 'If set, will use this to set project name instead of new app name')
       .action(newName => {
+        const newProjectName = program.projectName ? program.projectName : newName;
+        const nS_newProjectName = newProjectName.replace(/\s/g, '');
         const nS_NewName = newName.replace(/\s/g, '');
         const pattern = /^([0-9]|[a-z])+([0-9a-z\s]+)$/i;
         const lC_Ns_NewAppName = nS_NewName.toLowerCase();
         const bundleID = program.bundleID ? program.bundleID.toLowerCase() : null;
         let newBundlePath;
-        const listOfFoldersAndFiles = foldersAndFiles(currentAppName, newName);
+        const listOfFoldersAndFiles = foldersAndFiles(currentAppName, newProjectName);
         const listOfFilesToModifyContent = filesToModifyContent(currentAppName, newName, projectName);
 
         if (bundleID) {
@@ -92,7 +95,7 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
             );
         }
 
-        if (!pattern.test(newName)) {
+        if (!pattern.test(newProjectName)) {
           return console.log(
             `"${
               newName
@@ -107,7 +110,7 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
         // Move files and folders from ./config/foldersAndFiles.js
         const resolveFoldersAndFiles = new Promise(resolve => {
           listOfFoldersAndFiles.forEach((element, index) => {
-            const dest = element.replace(new RegExp(nS_CurrentAppName, 'gi'), nS_NewName);
+            const dest = element.replace(new RegExp(nS_CurrentAppName, 'gi'), nS_newProjectName);
             let itemsProcessed = 1;
             const successMsg = `/${dest} ${colors.green('RENAMED')}`;
 
@@ -229,7 +232,7 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
             let filePathsCount = 0;
             const { currentBundleID, newBundleID, newBundlePath, javaFileBase } = params;
 
-            bundleIdentifiers(currentAppName, newName, projectName, currentBundleID, newBundleID, newBundlePath).map(
+            bundleIdentifiers(currentAppName, newProjectName, projectName, currentBundleID, newBundleID, newBundlePath).map(
               file => {
                 filePathsCount += file.paths.length - 1;
                 let itemsProcessed = 0;
@@ -260,7 +263,7 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
             .then(resolveBundleIdentifiers)
             .then(deletePreviousBundleDirectory)
             .then(cleanBuilds)
-            .then(() => console.log(`APP SUCCESSFULLY RENAMED TO "${newName}"! 🎉 🎉 🎉`.green))
+            .then(() => console.log(`APP SUCCESSFULLY RENAMED TO "${newProjectName}"! 🎉 🎉 🎉`.green))
             .then(() => {
               if (fs.existsSync(path.join(__dirname, 'ios', 'Podfile'))) {
                 console.log(
