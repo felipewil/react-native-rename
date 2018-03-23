@@ -84,7 +84,7 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
         const bundleID = program.bundleID ? program.bundleID.toLowerCase() : null;
         let newBundlePath;
         const listOfFoldersAndFiles = foldersAndFiles(currentAppName, newProjectName);
-        const listOfFilesToModifyContent = filesToModifyContent(currentAppName, newName, projectName);
+        const listOfFilesToModifyContent = filesToModifyContent(currentAppName, newName, newProjectName);
 
         if (bundleID) {
           newBundlePath = bundleID.replace(/\./g, '/');
@@ -97,9 +97,7 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
 
         if (!pattern.test(newProjectName)) {
           return console.log(
-            `"${
-              newName
-            }" is not a valid name for a project. Please use a valid identifier name (alphanumeric and space).`
+            `"${newName}" is not a valid name for a project. Please use a valid identifier name (alphanumeric and space).`
           );
         }
 
@@ -232,28 +230,33 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
             let filePathsCount = 0;
             const { currentBundleID, newBundleID, newBundlePath, javaFileBase } = params;
 
-            bundleIdentifiers(currentAppName, newProjectName, projectName, currentBundleID, newBundleID, newBundlePath).map(
-              file => {
-                filePathsCount += file.paths.length - 1;
-                let itemsProcessed = 0;
+            bundleIdentifiers(
+              currentAppName,
+              newProjectName,
+              projectName,
+              currentBundleID,
+              newBundleID,
+              newBundlePath
+            ).map(file => {
+              filePathsCount += file.paths.length - 1;
+              let itemsProcessed = 0;
 
-                file.paths.map((filePath, index) => {
-                  const newPaths = [];
-                  if (fs.existsSync(path.join(__dirname, filePath))) {
-                    newPaths.push(path.join(__dirname, filePath));
+              file.paths.map((filePath, index) => {
+                const newPaths = [];
+                if (fs.existsSync(path.join(__dirname, filePath))) {
+                  newPaths.push(path.join(__dirname, filePath));
 
-                    setTimeout(() => {
-                      itemsProcessed += index;
-                      replaceContent(file.regex, file.replacement, newPaths);
-                      if (itemsProcessed === filePathsCount) {
-                        const oldBundleNameDir = path.join(__dirname, javaFileBase, currentBundleID);
-                        resolve(oldBundleNameDir);
-                      }
-                    }, 200 * index);
-                  }
-                });
-              }
-            );
+                  setTimeout(() => {
+                    itemsProcessed += index;
+                    replaceContent(file.regex, file.replacement, newPaths);
+                    if (itemsProcessed === filePathsCount) {
+                      const oldBundleNameDir = path.join(__dirname, javaFileBase, currentBundleID);
+                      resolve(oldBundleNameDir);
+                    }
+                  }, 200 * index);
+                }
+              });
+            });
           });
 
         const rename = () => {
