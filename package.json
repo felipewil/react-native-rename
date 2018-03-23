@@ -1,8 +1,8 @@
 {
-  "name": "react-native-rename",
+  "name": "react-native-rename-gv",
   "version": "2.2.2",
   "description": "Rename react-native app with just one command",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "babel src --out-dir lib",
@@ -35,7 +35,7 @@
   "author": "June Domingo <junedomingo@gmail.com>",
   "license": "MIT",
   "bin": {
-    "react-native-rename": "src/index.js"
+    "react-native-rename": "lib/index.js"
   },
   "bugs": {
     "url": "https://github.com/junedomingo/react-native-rename/issues"
