@@ -1,9 +1,10 @@
 // nS - No Space
 // lC - Lowercase
 
-export function filesToModifyContent(currentAppName, newName) {
+export function filesToModifyContent(currentAppName, newName, newProjectName) {
   const nS_CurrentAppName = currentAppName.replace(/\s/g, '');
   const nS_NewName = newName.replace(/\s/g, '');
+  const nS_NewProjectName = newProjectName.replace(/\s/g, '');
 
   return [
     {
@@ -13,18 +14,18 @@ export function filesToModifyContent(currentAppName, newName) {
     },
     {
       regex: nS_CurrentAppName,
-      replacement: nS_NewName,
+      replacement: nS_NewProjectName,
       paths: [
         'index.js',
         'index.android.js',
         'index.ios.js',
-        `ios/${nS_NewName}.xcodeproj/project.pbxproj`,
-        `ios/${nS_NewName}.xcworkspace/contents.xcworkspacedata`,
-        `ios/${nS_NewName}.xcodeproj/xcshareddata/xcschemes/${nS_NewName}-tvOS.xcscheme`,
-        `ios/${nS_NewName}.xcodeproj/xcshareddata/xcschemes/${nS_NewName}.xcscheme`,
-        `ios/${nS_NewName}/AppDelegate.m`,
+        `ios/${nS_NewProjectName}.xcodeproj/project.pbxproj`,
+        `ios/${nS_NewProjectName}.xcworkspace/contents.xcworkspacedata`,
+        `ios/${nS_NewProjectName}.xcodeproj/xcshareddata/xcschemes/${nS_NewName}-tvOS.xcscheme`,
+        `ios/${nS_NewProjectName}.xcodeproj/xcshareddata/xcschemes/${nS_NewName}.xcscheme`,
+        `ios/${nS_NewProjectName}/AppDelegate.m`,
         'android/settings.gradle',
-        `ios/${nS_NewName}Tests/${nS_NewName}Tests.m`,
+        `ios/${nS_NewProjectName}Tests/${nS_NewProjectName}Tests.m`,
         'ios/build/info.plist',
         'ios/Podfile',
         'app.json',
@@ -32,17 +33,17 @@ export function filesToModifyContent(currentAppName, newName) {
     },
     {
       regex: `text="${currentAppName}"`,
-      replacement: `text="${newName}"`,
-      paths: [`ios/${nS_NewName}/Base.lproj/LaunchScreen.xib`],
+      replacement: `text="${newProjectName}"`,
+      paths: [`ios/${nS_NewProjectName}/Base.lproj/LaunchScreen.xib`],
     },
     {
       regex: currentAppName,
-      replacement: newName,
-      paths: [`ios/${nS_NewName}/Info.plist`],
+      replacement: newProjectName,
+      paths: [`ios/${nS_NewProjectName}/Info.plist`],
     },
     {
       regex: `"name": "${nS_CurrentAppName}"`,
-      replacement: `"name": "${nS_NewName}"`,
+      replacement: `"name": "${nS_NewProjectName}"`,
       paths: ['package.json'],
     },
     {
